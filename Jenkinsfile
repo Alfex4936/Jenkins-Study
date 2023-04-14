@@ -19,7 +19,6 @@ pipeline {
                 dockerfile {
                     filename 'Dockerfile.linux'
                     dir '.'
-                    label 'linux'
                 }
             }
             steps {
