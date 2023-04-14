@@ -1,3 +1,11 @@
+def getUnixStylePath(path) {
+    if (isUnix()) {
+        return path
+    } else {
+        return sh(script: "wslpath -a -u '${path}'", returnStdout: true).trim()
+    }
+}
+
 pipeline {
     agent none
 
@@ -14,11 +22,21 @@ pipeline {
             }
         }
 
+        stage('Build Docker Image') {
+            agent any
+            steps {
+                script {
+                    def dockerfile = 'Dockerfile.linux'
+                    def workspacePath = getUnixStylePath(env.WORKSPACE)
+                    myLinux = docker.build("my-linux:${env.BUILD_ID}", "-f ${dockerfile} .", "-v '${workspacePath}:${workspacePath}' -w '${workspacePath}'")
+                }
+            }
+        }
+
         stage('Build and Test') {
             agent {
-                dockerfile {
-                    filename 'Dockerfile.linux'
-                    dir '.'
+                docker {
+                    image myLinux.id
                 }
             }
             steps {
