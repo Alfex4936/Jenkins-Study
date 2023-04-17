@@ -31,7 +31,8 @@ pipeline {
             }
             steps {
                 sh 'cargo test --target x86_64-unknown-linux-gnu'
-                sh 'cargo test --target x86_64-pc-windows-gnu'
+                sh 'cargo build --tests --target x86_64-pc-windows-gnu'
+                sh 'wine target/x86_64-pc-windows-gnu/debug/jenkins_test-*.exe'
             }
         }
     }
