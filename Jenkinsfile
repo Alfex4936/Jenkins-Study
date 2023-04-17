@@ -14,11 +14,20 @@ pipeline {
             }
         }
 
+        stage('Build Docker Image') {
+            agent any
+            steps {
+                script {
+                    myDockerImage = docker.build("my-image:${env.BUILD_ID}", ".")
+                }
+            }
+        }
+
         stage('Build and Test') {
-            agent { 
-                dockerfile {
-                    filename 'Dockerfile'
-                    dir '.'
+            agent {
+                docker {
+                    image myDockerImage.id
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
             steps {
