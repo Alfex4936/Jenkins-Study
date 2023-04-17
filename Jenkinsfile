@@ -27,8 +27,7 @@ pipeline {
             steps {
                 script {
                     def dockerfile = 'Dockerfile.linux'
-                    def workspacePath = getUnixStylePath(env.WORKSPACE)
-                    myLinux = docker.build("my-linux:${env.BUILD_ID}", "-f ${dockerfile} .", "-v '${workspacePath}:${workspacePath}' -w '${workspacePath}'")
+                    myLinux = docker.build("my-linux:${env.BUILD_ID}", "-f ${dockerfile} .")
                 }
             }
         }
