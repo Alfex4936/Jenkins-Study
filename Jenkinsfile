@@ -14,25 +14,27 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            agent any
+        stage('Build') {
             steps {
-                script {
-                    myDockerImage = docker.build("my-rust:${env.BUILD_ID}", ".")
-                }
+                sh 'cargo build'
             }
         }
 
-        stage('Build and Test') {
-            agent {
-                docker {
-                    image myDockerImage.id
-                }
-            }
+        stage('Test') {
             steps {
-                sh 'cargo test --target x86_64-unknown-linux-gnu'
-                sh 'cargo build --tests --target x86_64-pc-windows-gnu'
-                sh 'wine target/x86_64-pc-windows-gnu/debug/jenkins_test-*.exe'
+                sh 'cargo test'
+            }
+        }
+
+        stage('Format') {
+            steps {
+                sh 'cargo fmt --all -- --check'
+            }
+        }
+
+        stage('Clippy Lint') {
+            steps {
+                sh 'cargo clippy --all-targets --all-features -- -D warnings'
             }
         }
     }
