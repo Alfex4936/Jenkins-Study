@@ -11,7 +11,7 @@ pipeline {
 
     environment {
         RUST_BACKTRACE = 1
-        CARGO_TERM_COLOR = 'always'
+        // CARGO_TERM_COLOR = 'always'
     }
 
     stages {
