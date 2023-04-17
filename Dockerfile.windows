@@ -1,0 +1,13 @@
+FROM mcr.microsoft.com/windows/servercore:ltsc2019
+
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+# Install Rust and other dependencies
+RUN iex ((New-Object System.Net.WebClient).DownloadString('https://win.rustup.rs/')); \
+    Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value ('{0};{1}' -f $env:PATH, 'C:\Users\ContainerAdministrator\.cargo\bin')
+
+WORKDIR /usr/src/app
+
+COPY . .
+
+RUN cargo build --release

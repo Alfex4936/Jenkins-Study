@@ -22,7 +22,7 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Docker Image for linux') {
             agent any
             steps {
                 script {
@@ -32,10 +32,31 @@ pipeline {
             }
         }
 
-        stage('Build and Test') {
+        stage('Build Docker Image for windows') {
+            agent any
+            steps {
+                script {
+                    def dockerfile = 'Dockerfile.windows'
+                    myWindows = docker.build("my-window:${env.BUILD_ID}", "-f ${dockerfile} .")
+                }
+            }
+        }
+
+        stage('Build and Test on linux') {
             agent {
                 docker {
                     image myLinux.id
+                }
+            }
+            steps {
+                sh 'cargo test'
+            }
+        }
+
+        stage('Build and Test on windows') {
+            agent {
+                docker {
+                    image myWindowws.id
                 }
             }
             steps {
