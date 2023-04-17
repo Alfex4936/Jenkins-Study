@@ -35,7 +35,7 @@ pipeline {
         stage('Build and Test on linux') {
             agent {
                 docker {
-                    image myLinux.id
+                    label "${myLinux.id}"
                 }
             }
             steps {
@@ -44,12 +44,11 @@ pipeline {
         }
 
         stage('Build and Test on windows') {
-           agent {
+            agent {
                 docker {
-                    image myLinux.id
+                    label "${myLinux.id}"
                 }
-           }
-
+            }
             steps {
                 sh 'cross test --target x86_64-pc-windows-gnu'
             }
