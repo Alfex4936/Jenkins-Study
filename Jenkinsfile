@@ -11,7 +11,7 @@ pipeline {
 
     environment {
         RUST_BACKTRACE = 1
-        // CARGO_TERM_COLOR = 'always'
+        CARGO_TERM_COLOR = 'never'
     }
 
     stages {
@@ -35,7 +35,7 @@ pipeline {
         stage('Build and Test on linux') {
             agent {
                 docker {
-                    label "${myLinux.id}"
+                    image "${myLinux.id}"
                 }
             }
             steps {
@@ -46,7 +46,7 @@ pipeline {
         stage('Build and Test on windows') {
             agent {
                 docker {
-                    label "${myLinux.id}"
+                    image "${myLinux.id}"
                 }
             }
             steps {
