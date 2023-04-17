@@ -23,6 +23,8 @@ pipeline {
             }
             steps {
                 sh 'cargo test'
+                sh 'cargo fmt --all -- --check'
+                sh 'cargo clippy --all-targets --all-features -- -D warnings'
             }
         }
     }
