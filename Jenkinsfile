@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
 
     environment {
         RUST_BACKTRACE = 1
@@ -8,7 +8,6 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            agent any
             steps {
                 checkout scm
             }
