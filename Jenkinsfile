@@ -18,7 +18,7 @@ pipeline {
             agent any
             steps {
                 script {
-                    myDockerImage = docker.build("my-image:${env.BUILD_ID}", ".")
+                    myDockerImage = docker.build("my-rust:${env.BUILD_ID}", ".")
                 }
             }
         }
@@ -27,12 +27,11 @@ pipeline {
             agent {
                 docker {
                     image myDockerImage.id
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
             steps {
-                sh 'cross test --target x86_64-unknown-linux-gnu'
-                sh 'cross test --target x86_64-pc-windows-gnu'
+                sh 'cargo test --target x86_64-unknown-linux-gnu'
+                sh 'cargo test --target x86_64-pc-windows-gnu'
             }
         }
     }
