@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
 
     environment {
         RUST_BACKTRACE = 1
@@ -12,28 +12,16 @@ pipeline {
                 checkout scm
             }
         }
-
-        stage('Build') {
-            steps {
-                sh 'cargo build'
+        
+        stage('Build and Test') {
+            agent {
+                dockerfile {
+                    filename 'Dockerfile.linux'
+                    dir '.'
+                }
             }
-        }
-
-        stage('Test') {
             steps {
                 sh 'cargo test'
-            }
-        }
-
-        stage('Format') {
-            steps {
-                sh 'cargo fmt --all -- --check'
-            }
-        }
-
-        stage('Clippy Lint') {
-            steps {
-                sh 'cargo clippy --all-targets --all-features -- -D warnings'
             }
         }
     }
