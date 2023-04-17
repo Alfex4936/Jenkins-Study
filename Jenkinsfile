@@ -7,7 +7,7 @@ def getUnixStylePath(path) {
 }
 
 pipeline {
-    agent none
+    agent { dockerfile true }
 
     environment {
         RUST_BACKTRACE = 1
@@ -22,22 +22,17 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image for linux') {
-            agent any
-            steps {
-                script {
-                    def dockerfile = 'Dockerfile.linux'
-                    myLinux = docker.build("my-linux:${env.BUILD_ID}", "-f ${dockerfile} .")
-                }
-            }
-        }
+        // stage('Build Docker Image for linux') {
+        //     agent any
+        //     steps {
+        //         script {
+        //             def dockerfile = 'Dockerfile.linux'
+        //             def myLinux = docker.build("my-linux:${env.BUILD_ID}", "-f ${dockerfile} .")
+        //         }
+        //     }
+        // }
 
         stage('Build and Test') {
-            agent {
-                docker {
-                    image myLinux.id
-                }
-            }
             steps {
                 sh 'cross test --target x86_64-unknown-linux-gnu'
                 sh 'cross test --target x86_64-pc-windows-gnu'
