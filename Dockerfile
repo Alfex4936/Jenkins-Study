@@ -1,5 +1,5 @@
 # Use a base image with Rust already installed
-FROM rust:1.68.2-slim-buster
+FROM rust:1.68.2
 
 RUN dpkg --add-architecture i386
 
