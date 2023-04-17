@@ -1,14 +1,19 @@
 # Use a base image with Rust already installed
 FROM rust:1.68.2-slim-buster
 
+RUN dpkg --add-architecture i386
+
+RUN wget -O - https://dl.winehq.org/wine-builds/winehq.key | apt-key add -
+
+RUN add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ impish main'
+
 # Install dependencies for Windows cross-compilation
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     gcc-mingw-w64-x86-64 \
     gcc-mingw-w64-i686 \
-    wine64 \
-    wine32
-    
+    winehq-stable
+
 # Install the Windows targets
 RUN rustup target add x86_64-pc-windows-gnu i686-pc-windows-gnu
 
