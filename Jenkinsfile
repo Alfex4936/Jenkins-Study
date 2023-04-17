@@ -32,16 +32,6 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image for windows') {
-            agent any
-            steps {
-                script {
-                    def dockerfile = 'Dockerfile.windows'
-                    myWindows = docker.build("my-window:${env.BUILD_ID}", "-f ${dockerfile} .")
-                }
-            }
-        }
-
         stage('Build and Test on linux') {
             agent {
                 docker {
@@ -49,18 +39,19 @@ pipeline {
                 }
             }
             steps {
-                sh 'cargo test'
+                sh 'cross test --target x86_64-unknown-linux-gnu'
             }
         }
 
         stage('Build and Test on windows') {
-            agent {
+           agent {
                 docker {
-                    image myWindowws.id
+                    image myLinux.id
                 }
-            }
+           }
+
             steps {
-                sh 'cargo test'
+                sh 'cross test --target x86_64-pc-windows-gnu'
             }
         }
     }
